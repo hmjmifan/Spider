@@ -2,6 +2,7 @@ package com.newer.studyspider;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -13,19 +14,22 @@ import org.jsoup.select.Elements;
 /**
  * HTTP/HTML 爬虫
  */
-public class Spider {
+public class Spider implements Runnable {
 
-	String url;
-
-	public Spider(String url) {
+	private String url;
+	private List<Film> films;
+	
+	
+	public Spider(String url,List<Film> films) {
 		this.url = url;
+		this.films=films;
 
 	}
 
 	Document doc;
 
-	public void start() throws NullException {
-
+	@Override
+	public void run() {
 		String id;
 		String poster;
 		String title;
@@ -42,28 +46,21 @@ public class Spider {
 			// 发送HTTP GET请求 ，获得文档
 			doc = Jsoup.connect(url).timeout(10000).get();
 
-			Elements page = doc.select(".paginator  a");
-
-			for (int j = 1; j <= page.size(); j++) {
+			
 
 				// grid_view 类别中的 item，
 				Elements items = doc.select(".grid_view .item");
 				// 遍历
 
 				for (int i = 0; i < items.size(); i++) {
+					Film film = new Film();
 					// 取到一部影片
 					Element item = items.get(i);
-					// 排名
-					// 在某一部内部找
-					// 得到某部影片中的第一个<em>标签中的文本
-					id = item.select("em").first().text();
-					// 海报
-					// 得到某部影片中第一个<img>标签 中的属性：src
-					poster = item.select("img").first().attr("src");
-
-					// 影片名
-					title = item.select(".info .title").first().text();
-
+					id = item.select("em").first().text();				// 排名
+					poster = item.select("img").first().attr("src");	// 海报
+					title = item.select(".info .title").first().text();// 影片名
+					
+					
 					// 获取影片地址进入获取其内部信息
 					String path = item.select(".hd a").first().attr("href");
 					try {
@@ -71,11 +68,8 @@ public class Spider {
 						Elements ddc = docin.select("#info");
 
 						dy = ddc.select(".attrs a[rel$=v:directedBy]").text();
-
 						zy = ddc.select(" .actor").text();
-
 						lx = ddc.select("  span[property$=v:genre]").text();
-
 						time = ddc.select(" span[property$=v:runtime]").text();
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -97,22 +91,20 @@ public class Spider {
 					} catch (Exception e) {
 						zhaiyao = null;
 					}
-
-					Film film = new Film(id, poster, title, info, watched, num, zhaiyao, dy, zy, lx, time);
-					System.out.println(film.toString());
+					film.setId(id);
+					film.setPoster(poster);
+					film.setTitle(title);
+					film.setInfo(info);
+					film.setNum(num);
+					film.setZhaiyao(zhaiyao);
+					films.add(film);
+					
+					System.out.println(Thread.currentThread().getName() + " 抓取 " + id);
+//					System.out.println(new Film(id, poster, title, info, watched, num, zhaiyao, dy, zy, lx, time).toString());
 				}
-				if (j == 10) {
-					System.out.println("over");
-					break;
-				}
-				String in = doc.select(".paginator .next a").first().attr("href");
-				String net = url + in;
-				doc = Jsoup.connect(net).get();
-
-			}
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			
 		}
 	}
 

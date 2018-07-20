@@ -8,5 +8,8 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="E:/开发环境/jsoup-1.11.3.jar"/>
 	<classpathentry kind="lib" path="E:/开发环境/jsoup-1.11.3-sources.jar"/>
+	<classpathentry kind="lib" path="E:/开发环境/okhttp-3.11.0.jar"/>
+	<classpathentry kind="lib" path="E:/开发环境/okio-1.15.0.jar"/>
+	<classpathentry kind="lib" path="E:/开发环境/gson-2.8.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
