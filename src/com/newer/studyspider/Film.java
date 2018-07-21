@@ -92,8 +92,6 @@ public class Film implements Comparable<Film>{
 	}
 	@Override
 	public int compareTo(Film o) {
-			Integer.parseInt(id);
-		
 		return Integer.parseInt(id)-Integer.parseInt(o.id);
 	}
 

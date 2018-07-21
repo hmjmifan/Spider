@@ -99,6 +99,7 @@ public class Spider implements Runnable {
 					film.setZhaiyao(zhaiyao);
 					films.add(film);
 					
+					
 					System.out.println(Thread.currentThread().getName() + " 抓取 " + id);
 //					System.out.println(new Film(id, poster, title, info, watched, num, zhaiyao, dy, zy, lx, time).toString());
 				}
